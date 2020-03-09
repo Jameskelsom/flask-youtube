@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, abort
+from flask import Blueprint, render_template, request, abort, current_app
 
 bp = Blueprint('contact', __name__, url_prefix='/contact')
 
@@ -15,6 +15,7 @@ def contact():
         abort(400, "mensagem invalida!")
     else:
         print(request.form)
+        current_app.db.messages.insert_one({'name': name, 'message':message})
         return "Sua mensagem foi enviada com sucesso!"
 
 def configure(app):
