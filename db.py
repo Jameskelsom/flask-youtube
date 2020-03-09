@@ -1,4 +1,5 @@
 from tinymongo import TinyMongoClient
+import tinymongo
 
 def get_db():
     conn = TinyMongoClient()

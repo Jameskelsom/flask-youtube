@@ -6,21 +6,112 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 
 <body>
-    <div class="container">
-        <h1>Melhores Linguagens</h1>
-        <ul>
-            {% for lang in languages %}
-            <li>{{lang}}</li>
-            {% endfor %}
-        </ul>
-    </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Navbar</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Alterna navegação">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Home <span class="sr-only"></span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/themes">Themes</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    
+    <main role="main">
+    <section class="jumbotron text-center">
+            <div class="container">
+                <h1>List View</h1>
+                <p class="lead text-muted">We've listed the best videos for you</p>
+                <p>
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                        Upload Video
+                    </button>
+                </p>
+            </div>
+        </section>
+        <div class="album py-5 bg-light">
+            <div class="container">
+                <div class="row">
+                    {% for dt in data %}
+                    <div class="col-md-4">
+                        <div class="card mb-4 shadow-sm">
+                            <video width="100%" height="240" controls>
+                                <source src="/static/uploads/{{dt['file']}}" type="video/mp4">
+                            </video>
+                            <div class="card-body">
+                                <p class="card-text"><strong>Title: </strong>{{dt['theme_video']}}</p>
+                                <p class="card-text"><strong>Name: </strong>{{dt['name_video']}}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                            onclick="like('{{dt['_id']}}')">
+                                            <i class="material-icons dp48">thumb_up</i>
+                                            <span class="badge badge-primary"
+                                                id="like_{{dt['_id']}}">{{dt['like']}}</span>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary"
+                                            onclick="unlike('{{dt['_id']}}')">
+                                            <i class="material-icons dp48">thumb_down</i>
+                                            <span class="badge badge-primary"
+                                                id="unlike_{{dt['_id']}}">{{dt['unlike']}}</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Upload</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="." method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Theme Video</label>
+                                <input type="text" class="form-control" id="theme_video" name="theme_video">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Name Video</label>
+                                <input type="text" class="form-control" id="name_video" name="name_video">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleFormControlFile1">Select file</label>
+                                <input type="file" class="form-control-file" id="file" name="file" accept=".mp4">
+                            </div>
+                            <input type="submit" class="btn btn-primary" value="Submit">
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -32,6 +123,24 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script>
+        function like(id) {
+            var qtd = parseInt($("#like_" + id).text()) + 1;
+            $("#like_" + id).text(qtd);
+            $.get('./like/' + id + '/' + qtd, function (data) {
+            })
+            console.log('/like/' + id + '/' + qtd)
+        }
+        function unlike(id) {
+            var qtd = parseInt($("#unlike_" + id).text()) + 1;
+            $("#unlike_" + id).text(qtd);
+            console.log('/unlike/' + id + '/' + qtd)
+            $.get('/unlike/' + id + '/' + qtd, function (data) {
+            })
+        }
+    </script>
 </body>
 
 </html>
